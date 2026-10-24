@@ -1,9 +1,19 @@
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+// Resolve API base URL cleanly, handling trailing slashes and ensuring the /api namespace
+const getApiBase = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim()) {
+    const clean = envUrl.trim().replace(/\/+$/, '');
+    return clean.endsWith('/api') ? clean : `${clean}/api`;
+  }
+  return '/api';
+};
+
+const API_BASE = getApiBase();
 
 const handleResponse = async (res) => {
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.message || 'API request failed');
+    throw new Error(data.message || `API request failed with status ${res.status}`);
   }
   return data;
 };
