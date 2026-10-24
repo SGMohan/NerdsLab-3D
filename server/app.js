@@ -63,7 +63,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use('/api', apiLimiter);
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/', (req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
